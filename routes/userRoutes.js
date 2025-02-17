@@ -7,6 +7,7 @@ const router = express.Router();
 
 router.post('/register', async (req, res) => {
   const { username, password, user } = req.body;
+  console.log(username,password,user);
 
   try {
     const existingUser = await User.findOne({ where: { username } });
@@ -19,6 +20,7 @@ router.post('/register', async (req, res) => {
 
     res.status(201).json({ id: newUser.id, username: newUser.username, type: newUser.type });
   } catch (err) {
+    console.log(err);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
