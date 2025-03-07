@@ -4,8 +4,20 @@ const { Outpass } = require('../models');
 const { format } = require('date-fns');
 const { utcToZonedTime } = require('date-fns-tz');
 const { v4: jk } = require('uuid');
+const fs = require('fs');
+const PDFDocument = require('pdfkit');
+const nodemailer = require('nodemailer');
+const util = require('util');
 // const sendAcceptanceEmail = require('../utils/sendAcceptanceEmail'); // Ensure you have this function properly imported
 const router = express.Router();
+
+const transporter = nodemailer.createTransport({
+  service: 'Gmail',
+  auth: {
+    user:"arasuoutpass@gmail.com",
+    pass: "qkfb lhbi nsyc uklg",
+  },
+});
 
 const sendAcceptanceEmail = async (studentEmail, id, studentName, registerNo,department, year,semester,reason) => {
     const doc = new PDFDocument();
@@ -15,17 +27,18 @@ const sendAcceptanceEmail = async (studentEmail, id, studentName, registerNo,dep
       doc.font('./fonts/arial.ttf');
       doc.font('./fonts/ARIBL0.ttf');
   
-      const collegeLogoPath = './images/kingslogo.png'; 
-      const backgroundImagePath = './images/building.png';
+      const collegeLogoPath = './images/arasulogo.jpg'; 
+      const backgroundImagePath = './images/output-onlinepngtools.png';
       const backgroundImage = fs.readFileSync(backgroundImagePath);
   
       const logoImage = fs.readFileSync(collegeLogoPath);
-      doc.image(logoImage, 50, 30, { width: 70, y:70 }); 
+      // doc.image(logoImage, 50, 30, { width: 70, y:70 });
+      doc.image(logoImage, 10, 30, { width: 70, y: 70 });  
       doc.image(backgroundImage, 40, 140, { width: 612-80, height: 792-180 ,opacity: 0.1});
       
       doc.moveUp(2)
-      doc.fontSize(20).text('KINGS ENGINEERING COLLEGE', { align: 'center',bold: true, y: -30});
-      doc.fontSize(14).text('Chennai,Tamilnadu-602117 ', { align: 'center' });
+      doc.fontSize(20).text('ARASU COLLEGE OF ARTS & SCIENCE', { align: 'center',bold: true, y: -30});
+      doc.fontSize(14).text('Karur,Tamilnadu-639006 ', { align: 'center' });
       const lineStartX = 30; // Adjust the X-coordinate as needed
       const lineStartY = doc.y + 30; // Adjust the Y-coordinate to position the line below the text
       const lineEndX = doc.page.width - 30; // Adjust the X-coordinate for the line's end point
@@ -85,7 +98,7 @@ const sendAcceptanceEmail = async (studentEmail, id, studentName, registerNo,dep
   
   
     
-      const watermarkText = 'KINGS OUTPASS';
+      const watermarkText = 'ARASU OUTPASS';
   
       const watermarkWidth = doc.widthOfString(watermarkText);
       const watermarkHeight = doc.currentLineHeight();
@@ -99,9 +112,9 @@ const sendAcceptanceEmail = async (studentEmail, id, studentName, registerNo,dep
          .fillOpacity(0.2)
          .text(watermarkText, watermarkX, watermarkY, { align: 'center'});
   
-      const signature = generateDigitalSignature(studentName);
+    //   const signature = generateDigitalSignature(studentName);
   
-    doc.fontSize(12).text(`Digital Signature: ${signature}`,{ align: 'center' });
+    // doc.fontSize(12).text(`Digital Signature: ${signature}`,{ align: 'center' });
   
     
     // Determine the available width for both labels
@@ -226,6 +239,7 @@ router.post('/outpass/:id/accept', async (req, res) => {
       res.status(404).json({ success: false, message: 'Outpass not found' });
     }
   } catch (err) {
+    console.log(err);
     res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
 });
