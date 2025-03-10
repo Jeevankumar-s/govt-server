@@ -1,0 +1,43 @@
+### Get all items
+POST http://localhost:3000/api/users/register
+Content-Type: application/json
+
+{
+    "username":"priya",
+    "password":"priya",
+    "user":"hod"
+}
+
+###
+
+### Get a single item by ID
+GET http://localhost:3000/api/items/1
+Accept: application/json
+
+###
+
+### Create a new item
+POST http://localhost:3000/api/items
+Content-Type: application/json
+
+{
+    "name": "NewItem",
+    "description": "This is a new item"
+}
+
+###
+
+### Update an existing item by ID
+PUT http://localhost:3000/api/items/1
+Content-Type: application/json
+
+{
+    "name": "UpdatedItem",
+    "description": "This is an updated item"
+}
+
+###
+
+### Delete an item by ID
+DELETE http://localhost:3000/api/items/1
+Accept: application/json
